@@ -23,9 +23,9 @@ def print_maze(maze, path=None):
         line = ""
         for j, cell in enumerate(row):  # Iterate through each cell
             if path and (i, j) in path:  # If path is provided and current cell is in path
-                line += "🟩 "  # Highlight path
+                line += "G "  # Highlight path
             elif cell == 1:
-                line += "⬛ "  # Wall
+                line += "B "  # Wall
             else:
-                line += "⬜ "  # Empty space
+                line += "W "  # Empty space
         print(line)  # Print each row as a line of symbols
