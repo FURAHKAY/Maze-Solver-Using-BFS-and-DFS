@@ -1,30 +1,33 @@
-from maze import generate_maze, print_maze  # Maze generation & display
-from solver import bfs, dfs  # Algorithms
+from maze import generate_maze, print_maze
+from solver import bfs, dfs, a_star
 
-# Define maze size
 rows, cols = 10, 10
-maze = generate_maze(rows, cols)  # Create a random maze
+difficulty = input("Choose difficulty (easy / medium / hard): ").lower().strip()
+maze, start, goal = generate_maze(rows, cols, difficulty=difficulty)
 
-start = (1, 0)  # Start point
-goal = (rows - 1, cols - 1)  # Goal point
+print("Maze:")
+print_maze(maze, start=start, goal=goal)
 
-print("🧱 Generated Maze:")
-print_maze(maze)  # Print the maze without path
-
-# BFS
-print("\n🚀 Solving with BFS...")
-path = bfs(maze, start, goal)
-if path:
-    print("✅ BFS Path Found!")
-    print_maze(maze, path)  # Print maze with BFS path
+print("\nSolving with BFS...")
+bfs_path = bfs(maze, start, goal)
+if bfs_path:
+    print("BFS Path Found!")
+    print_maze(maze, path=bfs_path, start=start, goal=goal)
 else:
-    print("❌ BFS: No path found.")
+    print("BFS could not find a path.")
 
-# DFS
-print("\n🧭 Solving with DFS...")
-path = dfs(maze, start, goal)
-if path:
-    print("✅ DFS Path Found!")
-    print_maze(maze, path)  # Print maze with DFS path
+print("\nSolving with DFS...")
+dfs_path = dfs(maze, start, goal)
+if dfs_path:
+    print("DFS Path Found!")
+    print_maze(maze, path=dfs_path, start=start, goal=goal)
 else:
-    print("❌ DFS: No path found.")
+    print("DFS could not find a path.")
+
+print("\nSolving with A*...")
+a_star_path = a_star(maze, start, goal)
+if a_star_path:
+    print("A* Path Found!")
+    print_maze(maze, path=a_star_path, start=start, goal=goal)
+else:
+    print("A* could not find a path.")

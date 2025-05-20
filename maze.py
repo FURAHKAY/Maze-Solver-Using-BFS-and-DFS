@@ -1,6 +1,18 @@
 import random
 
-def generate_maze(rows, cols, wall_prob=0.3):
+def generate_maze(rows, cols, difficulty="medium"):
+    """
+    Generates a maze with difficulty controlling the number of walls.
+    Difficulty levels: 'easy', 'medium', 'hard'
+    """
+    # Map difficulty to wall probability
+    difficulty_levels = {
+        "easy": 0.2,     # fewer walls → easier
+        "medium": 0.35,   # default
+        "hard": 0.5     # many walls → harder
+    }
+
+    wall_prob = difficulty_levels.get(difficulty.lower(), 0.35)  # default to medium
     maze = []  # Initialize the maze as a list of lists (grid)
 
     for i in range(rows):  # Loop through each row
@@ -13,19 +25,33 @@ def generate_maze(rows, cols, wall_prob=0.3):
                 row.append(0)  # Empty space
         maze.append(row)  # Add the generated row to the maze
 
-    # Ensure the start and goal positions are walkable (not walls)
-    maze[0][0] = 0
-    maze[rows - 1][cols - 1] = 0
-    return maze  # Return the final grid
+    # Randomly pick a start and goal from open cells
+    open_cells = [(i, j) for i in range(rows) for j in range(cols) if maze[i][j] == 0]
 
-def print_maze(maze, path=None):
-    for i, row in enumerate(maze):  # Iterate through each row
+    if len(open_cells) < 2:
+        raise ValueError("Not enough open cells to place start and goal")
+
+    start = random.choice(open_cells)
+    goal = random.choice(open_cells)
+
+    # Make sure they're different
+    while goal == start:
+        goal = random.choice(open_cells)
+
+    return maze, start, goal
+
+def print_maze(maze, path=None, start=None, goal=None):
+    for i in range(len(maze)):
         line = ""
-        for j, cell in enumerate(row):  # Iterate through each cell
-            if path and (i, j) in path:  # If path is provided and current cell is in path
-                line += "🟩 "  # Highlight path
-            elif cell == 1:
-                line += "⬛ "  # Wall
+        for j in range(len(maze[0])):
+            if start and (i, j) == start:
+                line += "S  "
+            elif goal and (i, j) == goal:
+                line += "G  "
+            elif path and (i, j) in path:
+                line += "🟩 "
+            elif maze[i][j] == 1:
+                line += "⬛ "
             else:
-                line += "⬜ "  # Empty space
-        print(line)  # Print each row as a line of symbols
+                line += "⬜ "
+        print(line)
